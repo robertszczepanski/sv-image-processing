@@ -5,6 +5,7 @@
 // 0.3125 = 0b0000_0101
 // 0.5625 = 0b0000_1001
 // 0.1250 = 0b0000_0010
+// (* use_dsp = "yes" *)
 module RGB2GRAY(
 	input  logic clk,
 	input  logic [23:0] rgb_pixel,
@@ -32,7 +33,7 @@ module RGB2GRAY(
         // fraction moves to the left so an integer part is at [11:4] instead of [7:0]
         mul_red   <= red   * 8'b0000_0101;
         mul_green <= green * 8'b0000_1001;
-        mul_blue  <= red   * 8'b0000_0101;
+        mul_blue  <= blue  * 8'b0000_0010;
 
         // Cycle 2 - Add computed red and green colors together
         if (mul_red[11:4] + mul_green[11:4] > 255) begin
@@ -45,7 +46,7 @@ module RGB2GRAY(
         rgb_gray <= rg_gray[7:0] + mul_blue[11:4]; // Add without fraction
     end
 
-    always@( * )
+    always@(*)
     begin
         if (rgb_gray > 255) begin
             gray_pixel = 255;
